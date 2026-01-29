@@ -39,7 +39,7 @@ jobs:
           lime config JAVA_HOME $JAVA_HOME_17_arm64
           lime config ANDROID_SETUP true
 
-      - name: Rebuild Lime
+      - name: Rebuild Extension-WebM
         run: |
           rm -rf ./ndll
           mkdir ./ndll
