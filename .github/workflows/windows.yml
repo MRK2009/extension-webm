@@ -17,7 +17,7 @@ jobs:
           haxe-version: 4.3.7
       - name: Install Haxe dependencies
         run: |
-          haxelib install lime
+          haxelib install lime --quiet
           haxelib git hxcpp https://github.com/HaxeFoundation/hxcpp
           haxelib dev extension-webm ${{ github.workspace }}
       - name: Rebuild Extension-WebM
@@ -25,6 +25,7 @@ jobs:
         run: |
           rm -rf ./ndll
           mkdir ./ndll
+          haxelib run lime rebuild hxcpp
           haxelib run lime rebuild extension-webm windows
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
