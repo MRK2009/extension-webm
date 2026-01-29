@@ -1,0 +1,69 @@
+name: Mac CI
+on:
+  workflow_dispatch:
+  workflow_call:
+
+env:
+  HAXE_VERSION: 4.3.5
+
+jobs:
+  mac:
+    runs-on: macos-26
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+      - name: Setup Haxe
+        uses: krdlab/setup-haxe@master
+        with:
+          haxe-version: ${{ env.HAXE_VERSION }}
+      - name: Install Haxe dependencies
+        run: |
+          haxelib install lime --quiet
+          haxelib git hxcpp https://github.com/HaxeFoundation/hxcpp
+          haxelib dev extension-webm $GITHUB_WORKSPACE
+      - name: Configure Extension-WebM
+        run: haxelib dev extension-webm ${{ github.workspace }}
+      - name: Rebuild Extension-WebM
+        run: |
+          rm -rf ./ndll
+          mkdir ./ndll
+          haxelib run lime rebuild hxcpp
+          haxelib run lime rebuild mac -64
+      - name: Upload Artifact (x86_64)
+        uses: actions/upload-artifact@v4
+        with:
+          name: Mac64-NDLL
+          path: ndll
+          if-no-files-found: error
+  macarm64:
+    runs-on: macos-26
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+      - name: Setup Haxe
+        uses: krdlab/setup-haxe@master
+        with:
+          haxe-version: ${{ env.HAXE_VERSION }}
+      - name: Install Haxe dependencies
+        run: |
+          haxelib install lime --quiet
+          haxelib git hxcpp https://github.com/HaxeFoundation/hxcpp
+          haxelib dev extension-webm $GITHUB_WORKSPACE
+      - name: Configure Extension-WebM
+        run: haxelib dev extension-webm ${{ github.workspace }}
+      - name: Rebuild Extension-WebM
+        run: |
+          rm -rf ./ndll
+          mkdir ./ndll
+          haxelib run lime rebuild hxcpp
+          haxelib run lime rebuild mac -arm64 -D HXCPP_ARM64
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: MacArm64-NDLL
+          path: ndll
+          if-no-files-found: error
