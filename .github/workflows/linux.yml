@@ -1,0 +1,39 @@
+name: Linux CI
+on:
+  workflow_dispatch:
+  workflow_call:
+
+jobs:
+  linux:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - uses: krdlab/setup-haxe@master
+        with:
+          haxe-version: 4.3.7
+
+      - name: Set HAXEPATH
+        run: |
+          echo "HAXEPATH=$HAXE_STD_PATH/.." >> $GITHUB_ENV
+
+      - name: Install Haxe dependencies
+        run: |
+          haxelib install lime --quiet
+          haxelib git hxcpp https://github.com/HaxeFoundation/hxcpp
+          haxelib dev extension-webm $GITHUB_WORKSPACE
+
+      - name: Rebuild Extension-WebM
+        run: |
+          rm -rf ./ndll
+          mkdir ./ndll
+          haxelib run lime rebuild hxcpp
+          haxelib run lime rebuild extension-webm linux
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Linux-NDLL
+          path: ndll
+          if-no-files-found: error
