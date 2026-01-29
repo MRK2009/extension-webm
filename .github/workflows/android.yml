@@ -5,7 +5,7 @@ on:
 
 jobs:
   android:
-    runs-on: macos-14
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
         with:
@@ -13,7 +13,7 @@ jobs:
 
       - uses: krdlab/setup-haxe@master
         with:
-          haxe-version: 4.3.7
+          haxe-version: 4.2.5
 
       - name: Install Android NDK
         uses: nttld/setup-ndk@v1
@@ -27,8 +27,8 @@ jobs:
 
       - name: Install Haxe dependencies
         run: |
-          haxelib install lime --quiet
-          haxelib git hxcpp https://github.com/HaxeFoundation/hxcpp
+          haxelib install lime 7.9.0 --quiet
+          haxelib install hxcpp 4.2.1 --quiet
           haxelib dev extension-webm $GITHUB_WORKSPACE
 
       - name: Configure Android support
@@ -36,7 +36,7 @@ jobs:
           haxelib run lime setup -alias -y
           lime config ANDROID_SDK $ANDROID_HOME
           lime config ANDROID_NDK_ROOT ${{ steps.setup-ndk.outputs.ndk-path }}
-          lime config JAVA_HOME $JAVA_HOME_17_arm64
+          lime config JAVA_HOME $JAVA_HOME_8_arm64
           lime config ANDROID_SETUP true
 
       - name: Rebuild Extension-WebM
