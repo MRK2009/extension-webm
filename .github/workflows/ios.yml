@@ -1,0 +1,44 @@
+name: iOS CI
+on:
+  workflow_dispatch:
+  workflow_call:
+
+jobs:
+  ios:
+    runs-on: macos-26
+    steps:
+
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - uses: krdlab/setup-haxe@master
+        with:
+          haxe-version: 4.3.7
+
+      - name: Set HAXEPATH
+        run: |
+          echo "HAXEPATH=$HAXE_STD_PATH/.." >> $GITHUB_ENV
+
+      - name: Install Haxe dependencies
+        run: |
+          haxelib install lime --quiet
+          haxelib git hxcpp https://github.com/HaxeFoundation/hxcpp
+
+      - name: Rebuild Lime tools
+        run: |
+          haxelib dev extension-webm $GITHUB_WORKSPACE
+          haxelib run lime setup -alias -y -nocffi
+
+      - name: Rebuild Extension-WebM (iOS)
+        run: |
+          rm -rf ./ndll
+          mkdir ./ndll
+          haxelib run lime rebuild hxcpp
+          lime rebuild extension-webm ios
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iPhone-NDLL
+          path: ndll
+          if-no-files-found: 
