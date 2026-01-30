@@ -7,7 +7,6 @@ jobs:
   ios:
     runs-on: macos-15
     steps:
-
       - uses: actions/checkout@v4
         with:
           submodules: true
@@ -24,13 +23,9 @@ jobs:
         run: |
           haxelib install lime --quiet
           haxelib git hxcpp https://github.com/HaxeFoundation/hxcpp
-
-      - name: Rebuild Lime tools
-        run: |
           haxelib dev extension-webm $GITHUB_WORKSPACE
-          haxelib run lime setup -alias -y -nocffi
 
-      - name: Rebuild Extension-WebM (iOS)
+      - name: Rebuild Extension-WebM
         run: |
           rm -rf ./ndll
           mkdir ./ndll
@@ -41,4 +36,4 @@ jobs:
         with:
           name: iPhone-NDLL
           path: ndll
-          if-no-files-found: 
+          if-no-files-found: error
