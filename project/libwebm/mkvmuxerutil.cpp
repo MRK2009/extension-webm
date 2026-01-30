@@ -9,6 +9,7 @@
 #include "mkvmuxerutil.hpp"
 
 #ifdef __ANDROID__
+#include <unistd.h>
 #include <fcntl.h>
 #endif
 
