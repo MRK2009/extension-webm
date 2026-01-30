@@ -5,7 +5,7 @@ on:
 
 jobs:
   android:
-    runs-on: ubuntu-24.04
+    runs-on: macos-15
     steps:
       - uses: actions/checkout@v4
         with:
@@ -29,8 +29,8 @@ jobs:
         run: |
           haxelib run lime setup -alias -y
           lime config ANDROID_SDK $ANDROID_HOME
-          lime config ANDROID_NDK_ROOT $ANDROID_NDK_HOME
-          lime config JAVA_HOME $JAVA_HOME_17_X64
+          lime config ANDROID_NDK_ROOT $ANDROID_NDK_LATEST_HOME
+          lime config JAVA_HOME $JAVA_HOME_17_arm64
           lime config ANDROID_SETUP true
 
       - name: Rebuild Extension-WebM
