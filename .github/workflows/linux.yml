@@ -21,7 +21,6 @@ jobs:
 
       - name: Install Haxe dependencies
         run: |
-          sudo dpkg --add-architecture i386
           sudo apt-get update
           sudo apt-get install gcc-multilib g++-multilib libc6-dev-i386
           haxelib install lime --quiet
