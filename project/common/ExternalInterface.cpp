@@ -1019,8 +1019,21 @@ extern "C" {
 	}
 }
 
+extern "C" int extension_webm_register_prims () {
+	
+	return 0;
+	
+}  
+
+#if defined(HX_IOS)
+// DEPRECATED: Use extension_webm_register_prims instead.
 extern "C" int openfl_webm_register_prims () {
+	return extension_webm_register_prims();
+}
+
+extern "C" int extension_webm_register_prims () { //for ios because ios needs this
 	
 	return 0;
 	
 }
+#endif
