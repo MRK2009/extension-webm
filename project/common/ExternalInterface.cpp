@@ -848,7 +848,7 @@ extern "C" {
 						printf("\t\tAudio Channels\t\t: %lld\n", pAudioTrack->GetChannels());
 						printf("\t\tAudio BitDepth\t\t: %lld\n", pAudioTrack->GetBitDepth());
 						printf("\t\tAudio Sample Rate\t: %.3f\n", pAudioTrack->GetSamplingRate());
-						printf("\t\tAudio Private Data\t: %p, %ld\n", privateDataPointer, privateDataSize);
+						printf("\t\tAudio Private Data\t: %p, %zu\n", privateDataPointer, privateDataSize);
 						
 						this->vorbisDecoder->parseHeader(privateDataPointer, privateDataSize);
 					}
