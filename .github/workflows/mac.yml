@@ -20,16 +20,16 @@ jobs:
           haxe-version: ${{ env.HAXE_VERSION }}
       - name: Install Haxe dependencies
         run: |
-         curl --output ../hxcpp-4.3.45.zip --location https://github.com/HaxeFoundation/hxcpp/releases/download/v4.3.45/hxcpp-4.3.45.zip
+          curl --output ../hxcpp-4.3.45.zip --location https://github.com/HaxeFoundation/hxcpp/releases/download/v4.3.45/hxcpp-4.3.45.zip
           haxelib install ../hxcpp-4.3.45.zip --quiet
-      - name: Configure Lime
-        run: haxelib dev lime ${{ github.workspace }}
-      - name: Rebuild Lime
+      - name: Configure Extension-WebM
+        run: haxelib dev extension-webm ${{ github.workspace }}
+      - name: Rebuild Extension-WebM
         run: |
           rm -rf ./ndll
           mkdir ./ndll
-          # haxelib run lime rebuild mac -32
-          haxelib run lime rebuild mac -64
+          # haxelib run lime rebuild extension-webm mac -32
+          haxelib run lime rebuild extension-webm mac -64
       # - name: Upload Artifact (x86)
         # uses: actions/upload-artifact@v4
         # with:
@@ -60,14 +60,13 @@ jobs:
         run: |
           curl --output ../hxcpp-4.3.45.zip --location https://github.com/HaxeFoundation/hxcpp/releases/download/v4.3.45/hxcpp-4.3.45.zip
           haxelib install ../hxcpp-4.3.45.zip --quiet
-          haxelib dev lime $GITHUB_WORKSPACE
       - name: Configure Extension-WebM
         run: haxelib dev extension-webm ${{ github.workspace }}
       - name: Rebuild Extension-WebM
         run: |
           rm -rf ./ndll
           mkdir ./ndll
-          haxelib run lime rebuild mac -arm64
+          haxelib run lime rebuild extension-webm mac -arm64
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
