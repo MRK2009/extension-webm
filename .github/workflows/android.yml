@@ -62,3 +62,4 @@ jobs:
           name: Android-NDLL
           path: ndll
           if-no-files-found: error
+        if: matrix.ndk-version != 'stable'
