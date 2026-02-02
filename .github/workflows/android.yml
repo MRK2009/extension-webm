@@ -51,7 +51,7 @@ jobs:
         env:
           LIME_NDK_ROOT: ${{ matrix.ndk-version == 'stable' && '$ANDROID_NDK_ROOT' || steps.setup-ndk.outputs.ndk-path }}
 
-      - name: Rebuild Lime
+      - name: Rebuild Extension-WebM
         run: |
           rm -rf ./ndll
           mkdir ./ndll
