@@ -1,0 +1,76 @@
+name: Mac CI
+on:
+  workflow_dispatch:
+  workflow_call:
+
+env:
+  HAXE_VERSION: 4.2.5
+
+jobs:
+  mac:
+    runs-on: macos-14
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+      - name: Setup Haxe
+        uses: krdlab/setup-haxe@v2
+        with:
+          haxe-version: ${{ env.HAXE_VERSION }}
+      - name: Install Haxe dependencies
+        run: |
+         curl --output ../hxcpp-4.3.45.zip --location https://github.com/HaxeFoundation/hxcpp/releases/download/v4.3.45/hxcpp-4.3.45.zip
+          haxelib install ../hxcpp-4.3.45.zip --quiet
+      - name: Configure Lime
+        run: haxelib dev lime ${{ github.workspace }}
+      - name: Rebuild Lime
+        run: |
+          rm -rf ./ndll
+          mkdir ./ndll
+          # haxelib run lime rebuild mac -32
+          haxelib run lime rebuild mac -64
+      # - name: Upload Artifact (x86)
+        # uses: actions/upload-artifact@v4
+        # with:
+          # name: Mac-NDLL
+          # path: |
+            # ndll/Mac/
+            # !**/.gitignore
+            # lime.png
+          # if-no-files-found: error
+      - name: Upload Artifact (x86_64)
+        uses: actions/upload-artifact@v4
+        with:
+          name: Mac64-NDLL
+          path: ndll
+          if-no-files-found: error
+  macarm64:
+    runs-on: macos-14
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+      - name: Setup Haxe
+        uses: krdlab/setup-haxe@v2
+        with:
+          haxe-version: ${{ env.HAXE_VERSION }}
+      - name: Install Haxe dependencies
+        run: |
+          curl --output ../hxcpp-4.3.45.zip --location https://github.com/HaxeFoundation/hxcpp/releases/download/v4.3.45/hxcpp-4.3.45.zip
+          haxelib install ../hxcpp-4.3.45.zip --quiet
+          haxelib dev lime $GITHUB_WORKSPACE
+      - name: Configure Extension-WebM
+        run: haxelib dev extension-webm ${{ github.workspace }}
+      - name: Rebuild Extension-WebM
+        run: |
+          rm -rf ./ndll
+          mkdir ./ndll
+          haxelib run lime rebuild mac -arm64
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: MacArm64-NDLL
+          path: ndll
+          if-no-files-found: error
