@@ -20,6 +20,7 @@ jobs:
           haxe-version: ${{ env.HAXE_VERSION }}
       - name: Install Haxe dependencies
         run: |
+          haxelib install lime --quiet
           curl --output ../hxcpp-4.3.45.zip --location https://github.com/HaxeFoundation/hxcpp/releases/download/v4.3.45/hxcpp-4.3.45.zip
           haxelib install ../hxcpp-4.3.45.zip --quiet
       - name: Configure Extension-WebM
@@ -58,6 +59,7 @@ jobs:
           haxe-version: ${{ env.HAXE_VERSION }}
       - name: Install Haxe dependencies
         run: |
+          haxelib install lime --quiet
           curl --output ../hxcpp-4.3.45.zip --location https://github.com/HaxeFoundation/hxcpp/releases/download/v4.3.45/hxcpp-4.3.45.zip
           haxelib install ../hxcpp-4.3.45.zip --quiet
       - name: Configure Extension-WebM
