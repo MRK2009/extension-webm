@@ -1,0 +1,64 @@
+name: Android CI
+on:
+  workflow_dispatch:
+  workflow_call:
+
+jobs:
+  android:
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        ndk-version: [r28c, stable]
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Install Android NDK
+        uses: nttld/setup-ndk@v1
+        id: setup-ndk
+        if: matrix.ndk-version != 'stable'
+        with:
+          ndk-version: ${{ matrix.ndk-version }}
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: "zulu"
+          java-version: 17
+
+      - uses: krdlab/setup-haxe@v2
+        with:
+          haxe-version: 4.2.5
+
+      - name: Set HAXEPATH
+        run: |
+          echo "HAXEPATH=$HAXE_STD_PATH/.." >> $GITHUB_ENV
+
+      - name: Install Haxe dependencies
+        run: |
+          curl --output ../hxcpp-4.3.45.zip --location https://github.com/HaxeFoundation/hxcpp/releases/download/v4.3.45/hxcpp-4.3.45.zip
+          haxelib install ../hxcpp-4.3.45.zip --quiet
+          haxelib dev extension-webm $GITHUB_WORKSPACE
+
+      - name: Configure Android support
+        run: |
+          haxelib run lime setup -alias -y
+          lime config ANDROID_SDK $ANDROID_HOME
+          lime config ANDROID_NDK_ROOT ${{ env.LIME_NDK_ROOT }}
+          lime config JAVA_HOME $JAVA_HOME
+          lime config ANDROID_SETUP true
+        env:
+          LIME_NDK_ROOT: ${{ matrix.ndk-version == 'stable' && '$ANDROID_NDK_ROOT' || steps.setup-ndk.outputs.ndk-path }}
+
+      - name: Rebuild Lime
+        run: |
+          rm -rf ./ndll
+          mkdir ./ndll
+          lime rebuild extension-webm android
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Android-NDLL
+          path: ndll
+          if-no-files-found: error
